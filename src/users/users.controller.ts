@@ -11,8 +11,6 @@ import {
   UsePipes,
   ValidationPipe,
   Res,
-  Request,
-  ParseIntPipe,
   ParseUUIDPipe,
 } from '@nestjs/common';
 import { Response } from 'express';
@@ -37,7 +35,11 @@ export class UsersController {
   @Post()
   async create(@Res() res: Response, @Body() createUserdto: CreateUserDto) {
     const newUser = await this.usersService.createUser({ ...createUserdto });
-    res.send({ statusCode: 1, message: 'create user success', data: newUser });
+    res.send({
+      statusCode: 200,
+      message: 'create user success',
+      data: newUser,
+    });
   }
 
   @Get(':id')
