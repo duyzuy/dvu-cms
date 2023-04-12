@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { UsersModule } from './users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './users/entities/user.entity';
+
 // @Module({
 //   controllers: [AppController, UsersController],
 //   providers: [AppService, UsersService],
@@ -19,6 +20,7 @@ import { User } from './users/entities/user.entity';
       database: 'dvucms',
       entities: [User],
       synchronize: true,
+      autoLoadEntities: true,
     }),
   ],
 })

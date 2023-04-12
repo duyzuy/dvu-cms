@@ -12,6 +12,8 @@ import {
   ValidationPipe,
   Res,
   Request,
+  ParseIntPipe,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import { Response } from 'express';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -22,35 +24,50 @@ import { UsersService } from './users.service';
 export class UsersController {
   constructor(private usersService: UsersService) {}
   @Get()
-  getAll(@Req() request: Request): string {
-    return 'all users';
+  async getAll(@Res() res: Response) {
+    const allUser = await this.usersService.getAllUsers();
+
+    res.send({
+      statusCode: 1,
+      message: 'Get all users success',
+      data: allUser,
+    });
   }
 
   @Post()
-  create(@Res() res: Response, @Req() req: Request) {
-    // res.status(HttpStatus.CREATED).send();
-    console.log({ req });
-    res
-      .status(HttpStatus.OK)
-      .send({ statusCode: 1, message: 'create user success' });
+  async create(@Res() res: Response, @Body() createUserdto: CreateUserDto) {
+    const newUser = await this.usersService.createUser({ ...createUserdto });
+    res.send({ statusCode: 1, message: 'create user success', data: newUser });
   }
 
   @Get(':id')
-  getDetail(@Param() params): string {
-    console.log(params.id);
-    return `This user Id is ${params.id}`;
+  async getUser(@Param('id', ParseUUIDPipe) id, @Res() res: Response) {
+    const userData = await this.usersService.getUserById(id);
+    if (!userData) {
+      res.status(400).send({
+        message: 'User not found.',
+      });
+    }
+    res.send({
+      data: userData,
+      message: 'Get data success.',
+    });
   }
 
   @Put(':id')
-  update(
-    @Param('id') id: string,
+  async updateUser(
+    @Param('id', ParseUUIDPipe) id: string,
     @Body() updateUserDto: UpdateUserDto,
-  ): string {
-    return `update user ${id} success`;
+    @Res() res: Response,
+  ) {
+    const user = await this.usersService.updateUserById(id, {
+      ...updateUserDto,
+    });
+    res.send({
+      data: user,
+    });
   }
 
   @Delete(':id')
-  delete(@Param('id') id: string) {
-    return `This action removes a #${id} cat`;
-  }
+  delete(@Param('id') id: string) {}
 }

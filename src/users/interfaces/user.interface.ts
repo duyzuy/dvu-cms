@@ -12,3 +12,13 @@ export interface User {
   createAt: string;
   updateAt: string;
 }
+
+export type CreateUserParams = Pick<
+  User,
+  'email' | 'firstName' | 'lastName' | 'userName'
+>;
+
+export type UpdateUserParams = Pick<
+  User,
+  'firstName' | 'lastName' | 'userName'
+>;

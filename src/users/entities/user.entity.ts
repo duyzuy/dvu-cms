@@ -35,12 +35,12 @@ export class User {
   @Column({ default: true })
   isActive: boolean;
 
-  @Column()
+  @Column({ nullable: true })
   token: string;
 
   @Column()
   createAt: Date;
 
-  @Column()
+  @Column({ nullable: true })
   updateAt: Date;
 }
