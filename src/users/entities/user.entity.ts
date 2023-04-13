@@ -1,6 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 import { UserRoleType } from '../interfaces/user.interface';
-
 @Entity()
 export class User {
   @PrimaryGeneratedColumn('uuid')
@@ -27,8 +26,8 @@ export class User {
 
   @Column({
     type: 'enum',
-    enum: ['superadmin', 'admin', 'editor', 'visitor'],
-    default: 'visitor',
+    enum: UserRoleType,
+    default: UserRoleType.VISITOR,
   })
   role: UserRoleType;
 

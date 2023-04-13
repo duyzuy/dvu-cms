@@ -1,0 +1,77 @@
+import {
+  Column,
+  Entity,
+  PrimaryGeneratedColumn,
+  ManyToMany,
+  JoinTable,
+} from 'typeorm';
+import { PostStatus, PostTypes } from 'src/utils/types';
+import { Category } from 'src/categories/entities/category.entity';
+import { Tag } from 'src/tags/entities/tag.entity';
+@Entity()
+export class Post {
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
+
+  @Column({ unique: true })
+  slug: string;
+
+  @Column({ type: 'varchar' })
+  title: string;
+
+  @Column({
+    type: 'longtext',
+  })
+  description: string;
+
+  @Column()
+  shortDescription: string;
+
+  @Column({
+    type: 'enum',
+    enum: PostStatus,
+    default: PostStatus.PENDING,
+  })
+  status: PostStatus;
+
+  @Column({
+    type: 'enum',
+    enum: PostTypes,
+    default: PostTypes.POST,
+  })
+  postType: PostStatus;
+
+  @ManyToMany((type) => Category, (category) => category.posts)
+  @JoinTable({
+    name: 'posts_categories',
+    joinColumn: {
+      name: 'postId',
+      referencedColumnName: 'id',
+    },
+    inverseJoinColumn: {
+      name: 'categoryId',
+      referencedColumnName: 'id',
+    },
+  })
+  categories: Category[];
+
+  @ManyToMany((type) => Tag)
+  @JoinTable({
+    name: 'posts_tags',
+    joinColumn: {
+      name: 'postId',
+      referencedColumnName: 'id',
+    },
+    inverseJoinColumn: {
+      name: 'tagId',
+      referencedColumnName: 'id',
+    },
+  })
+  tags: Tag[];
+
+  @Column()
+  createdAt: Date;
+
+  @Column()
+  updateAt: Date;
+}

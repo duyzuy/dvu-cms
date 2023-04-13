@@ -1,6 +1,10 @@
 import { IsEmail, IsNotEmpty, MinLength } from 'class-validator';
+import { Unique } from 'src/utils/UniqueValidation';
+import { User } from '../entities/user.entity';
 export class CreateUserDto {
   @IsEmail()
+  @IsNotEmpty()
+  @Unique(User)
   email: string;
 
   @IsNotEmpty()

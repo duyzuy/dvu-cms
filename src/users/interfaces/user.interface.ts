@@ -1,4 +1,9 @@
-export type UserRoleType = 'superadmin' | 'admin' | 'editor' | 'visitor';
+export enum UserRoleType {
+  SUPERADMIN = 'superadmin',
+  ADMIN = 'admin',
+  EDITOR = 'editor',
+  VISITOR = 'visitor',
+}
 export interface User {
   id: string;
   firstName: string;

@@ -5,14 +5,22 @@ import { User } from './entities/user.entity';
 import {
   CreateUserParams,
   UpdateUserParams,
+  UserRoleType,
 } from './interfaces/user.interface';
+import { DataSource } from 'typeorm';
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
     private usersRepository: Repository<User>,
+    private dataSource: DataSource,
   ) {}
-  getAllUsers(): Promise<User[]> {
+  async getAllUsers(): Promise<User[]> {
+    // console.log(
+    //   await this.dataSource.manager.findOneByOrFail(User, {
+    //     email: 'nguyenvana@gmail.com',
+    //   }),
+    // );
     return this.usersRepository.find();
   }
 
@@ -23,7 +31,7 @@ export class UsersService {
   createUser(userDetail: CreateUserParams) {
     const newUser = this.usersRepository.create({
       ...userDetail,
-      role: 'admin',
+      role: UserRoleType.VISITOR,
       token: '',
       isActive: false,
       password: '123',
@@ -39,6 +47,11 @@ export class UsersService {
       .set({ ...userDetail })
       .where('id = :id', { id })
       .execute();
-    // return this.usersRepository.update({ id }, { ...userDetail });
+  }
+  isEmailExists(email: string): Promise<boolean> {
+    return this.usersRepository
+      .createQueryBuilder()
+      .where('email = :id', { email })
+      .getExists();
   }
 }

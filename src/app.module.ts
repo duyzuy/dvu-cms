@@ -1,16 +1,20 @@
 import { Module } from '@nestjs/common';
-import { UsersModule } from './users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
+//entities
 import { User } from './users/entities/user.entity';
+import { Post } from './posts/entities/post.entity';
+import { Category } from './categories/entities/category.entity';
+import { Tag } from './tags/entities/tag.entity';
+//modules
+import { UsersModule } from './users/users.module';
+import { PostsModule } from './posts/posts.module';
+import { CategoriesModule } from './categories/categories.module';
 
-// @Module({
-//   controllers: [AppController, UsersController],
-//   providers: [AppService, UsersService],
-// })
+import { TagsModule } from './tags/tags.module';
+import { UniqueConstraint } from './utils/UniqueValidation';
 
 @Module({
   imports: [
-    UsersModule,
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: 'localhost',
@@ -18,10 +22,15 @@ import { User } from './users/entities/user.entity';
       username: 'root',
       password: '',
       database: 'dvucms',
-      entities: [User],
-      synchronize: true,
-      autoLoadEntities: true,
+      entities: [User, Post, Category, Tag],
+      synchronize: true, //shouldn't be used in production
+      autoLoadEntities: false,
     }),
+    UsersModule,
+    PostsModule,
+    CategoriesModule,
+    TagsModule,
   ],
+  providers: [UniqueConstraint],
 })
 export class AppModule {}

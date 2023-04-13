@@ -12,6 +12,7 @@ import {
   ValidationPipe,
   Res,
   ParseUUIDPipe,
+  BadRequestException,
 } from '@nestjs/common';
 import { Response } from 'express';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -33,13 +34,18 @@ export class UsersController {
   }
 
   @Post()
-  async create(@Res() res: Response, @Body() createUserdto: CreateUserDto) {
-    const newUser = await this.usersService.createUser({ ...createUserdto });
-    res.send({
-      statusCode: 200,
-      message: 'create user success',
-      data: newUser,
-    });
+  async create(@Res() res: Response, @Body() createUserDto: CreateUserDto) {
+    try {
+      const newUser = await this.usersService.createUser({ ...createUserDto });
+      res.send({
+        statusCode: 200,
+        message: 'create user success',
+        data: newUser,
+      });
+    } catch (error) {
+      console.log({ error });
+      res.status(HttpStatus.UNPROCESSABLE_ENTITY).send(error);
+    }
   }
 
   @Get(':id')
