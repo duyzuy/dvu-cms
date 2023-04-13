@@ -7,13 +7,12 @@ import {
   UpdateUserParams,
   UserRoleType,
 } from './interfaces/user.interface';
-import { DataSource } from 'typeorm';
+
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
     private usersRepository: Repository<User>,
-    private dataSource: DataSource,
   ) {}
   async getAllUsers(): Promise<User[]> {
     // console.log(

@@ -9,7 +9,6 @@ import { Tag } from './tags/entities/tag.entity';
 import { UsersModule } from './users/users.module';
 import { PostsModule } from './posts/posts.module';
 import { CategoriesModule } from './categories/categories.module';
-
 import { TagsModule } from './tags/tags.module';
 import { UniqueConstraint } from './utils/UniqueValidation';
 
@@ -24,7 +23,7 @@ import { UniqueConstraint } from './utils/UniqueValidation';
       database: 'dvucms',
       entities: [User, Post, Category, Tag],
       synchronize: true, //shouldn't be used in production
-      autoLoadEntities: false,
+      autoLoadEntities: true,
     }),
     UsersModule,
     PostsModule,

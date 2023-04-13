@@ -8,11 +8,8 @@ import {
   Delete,
   Req,
   HttpStatus,
-  UsePipes,
-  ValidationPipe,
   Res,
   ParseUUIDPipe,
-  BadRequestException,
 } from '@nestjs/common';
 import { Response } from 'express';
 import { CreateUserDto } from './dto/create-user.dto';

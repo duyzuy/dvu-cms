@@ -10,6 +10,9 @@ export class CreatePostDto {
   @Unique(Post)
   slug: string;
 
+  @IsNotEmpty()
+  thumbnail: string;
+
   description: string;
 
   shortDescription: string;
@@ -25,4 +28,8 @@ export class CreatePostDto {
 
   @IsNotEmpty()
   tags: string;
+
+  createdAt: string;
+
+  updateAt: string;
 }

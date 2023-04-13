@@ -27,16 +27,16 @@ export class PostsController {
 
   @Post()
   async create(@Res() res: Response, @Body() createPostDto: CreatePostDto) {
-    const newPost = await this.postsService.createPost({
-      ...createPostDto,
+    // const newPost = await this.postsService.createPost({
+    //   ...createPostDto,
+    // });
+    // if (newPost) {
+    //
+    // }
+    res.send({
+      data: '',
+      message: 'Create Post success',
     });
-
-    if (newPost) {
-      res.send({
-        data: newPost,
-        message: 'Create Post success',
-      });
-    }
   }
 
   @Get(':id')

@@ -14,7 +14,9 @@ export class UniqueConstraint implements ValidatorConstraintInterface {
   constructor(private dataSource: DataSource) {}
   async validate(value: any, args: ValidationArguments) {
     const entity = args.object[`class_entity_${args.property}`];
-
+    if (!value) {
+      return true;
+    }
     const isExists = await this.dataSource.manager.findOneBy(entity, {
       [args.property]: value,
     });
@@ -25,6 +27,9 @@ export class UniqueConstraint implements ValidatorConstraintInterface {
       return true;
     }
   }
+  defaultMessage(args?: ValidationArguments): string {
+    return `${args.property} already exists.`;
+  }
 }
 
 export function Unique(
@@ -32,7 +37,6 @@ export function Unique(
   validationOptions?: ValidationOptions,
 ) {
   validationOptions = {
-    ...{ message: '$value already exists. Choose another.' },
     ...validationOptions,
   };
   return function (object: Object, propertyName: string) {

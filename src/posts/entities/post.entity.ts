@@ -20,11 +20,20 @@ export class Post {
   title: string;
 
   @Column({
+    nullable: true,
+  })
+  thumbnail: string;
+
+  @Column({
     type: 'longtext',
+    nullable: true,
   })
   description: string;
 
-  @Column()
+  @Column({
+    type: 'text',
+    nullable: true,
+  })
   shortDescription: string;
 
   @Column({

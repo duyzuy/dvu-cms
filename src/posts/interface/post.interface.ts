@@ -3,6 +3,7 @@ export interface Post {
   id: string;
   slug: string;
   title: string;
+  thumbnail: string;
   description: string;
   shortDescription: string;
   status: PostStatus;
@@ -12,3 +13,5 @@ export interface Post {
   createdAt: string;
   updateAt: string;
 }
+
+export type PostCreateParams = Omit<Post, 'id'>;
