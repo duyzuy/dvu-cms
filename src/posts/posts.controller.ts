@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Res, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Res,
+  Post,
+  ParseUUIDPipe,
+  Param,
+} from '@nestjs/common';
 import { Response } from 'express';
 import { CreatePostDto } from './dto/create-post.dto';
 import { PostsService } from './posts.service';
@@ -9,7 +17,8 @@ export class PostsController {
 
   @Get()
   async getAllPosts(@Res() res: Response) {
-    const posts = this.postsService.getAllPosts();
+    const posts = await this.postsService.getAllPosts();
+
     res.send({
       data: posts,
       message: 'Get posts success',
@@ -18,15 +27,25 @@ export class PostsController {
 
   @Post()
   async create(@Res() res: Response, @Body() createPostDto: CreatePostDto) {
-    const post = await this.postsService.createPost({
+    const newPost = await this.postsService.createPost({
       ...createPostDto,
     });
 
-    if (post) {
+    if (newPost) {
       res.send({
-        data: post,
+        data: newPost,
         message: 'Create Post success',
       });
     }
   }
+
+  @Get(':id')
+  async getPostById(
+    @Res() res: Response,
+    @Param('id', ParseUUIDPipe) id: string,
+  ) {
+    const post = await this.postsService.getPostById(id);
+  }
+  @Get(':slug')
+  async getPostBySlug(@Res() res: Response, @Param('slug') slug: string) {}
 }

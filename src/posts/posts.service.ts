@@ -10,7 +10,7 @@ export class PostsService {
     private postsRepository: Repository<Post>,
   ) {}
 
-  getAllPosts() {
+  getAllPosts(): Promise<Post[]> {
     return this.postsRepository.find();
   }
 
@@ -20,5 +20,13 @@ export class PostsService {
     });
 
     return this.postsRepository.save(newPost);
+  }
+
+  getPostById(id: string): Promise<Post> {
+    return this.postsRepository.findOneBy({ id });
+  }
+
+  getPostBySlug(slug: string): Promise<Post> {
+    return this.postsRepository.findOneBy({ slug });
   }
 }
