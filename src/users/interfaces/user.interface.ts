@@ -14,8 +14,8 @@ export interface User {
   role: UserRoleType;
   isActive: boolean;
   token: string;
-  createAt: string;
-  updateAt: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export type CreateUserParams = Pick<

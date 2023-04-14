@@ -1,5 +1,13 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  OneToMany,
+  JoinColumn,
+} from 'typeorm';
 import { UserRoleType } from '../interfaces/user.interface';
+import { Post } from 'src/posts/entities/post.entity';
+import { Expose } from 'class-transformer';
 @Entity()
 export class User {
   @PrimaryGeneratedColumn('uuid')
@@ -18,7 +26,9 @@ export class User {
   })
   email: string;
 
-  @Column()
+  @Column({
+    nullable: false,
+  })
   userName: string;
 
   @Column()
@@ -31,6 +41,9 @@ export class User {
   })
   role: UserRoleType;
 
+  @OneToMany((type) => Post, (post) => post.user)
+  posts: Post[];
+
   @Column({ default: true })
   isActive: boolean;
 
@@ -38,8 +51,13 @@ export class User {
   token: string;
 
   @Column()
-  createAt: Date;
+  createdAt: Date;
 
   @Column({ nullable: true })
-  updateAt: Date;
+  updatedAt: Date;
+
+  @Expose()
+  get fullName(): string {
+    return `${this.firstName} ${this.lastName}`;
+  }
 }

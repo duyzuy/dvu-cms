@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, forwardRef, Inject } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
@@ -7,7 +7,6 @@ import {
   UpdateUserParams,
   UserRoleType,
 } from './interfaces/user.interface';
-
 @Injectable()
 export class UsersService {
   constructor(
@@ -15,11 +14,6 @@ export class UsersService {
     private usersRepository: Repository<User>,
   ) {}
   async getAllUsers(): Promise<User[]> {
-    // console.log(
-    //   await this.dataSource.manager.findOneByOrFail(User, {
-    //     email: 'nguyenvana@gmail.com',
-    //   }),
-    // );
     return this.usersRepository.find();
   }
 
@@ -34,7 +28,7 @@ export class UsersService {
       token: '',
       isActive: false,
       password: '123',
-      createAt: new Date(),
+      createdAt: new Date(),
     });
 
     return this.usersRepository.save(newUser);
@@ -52,5 +46,12 @@ export class UsersService {
       .createQueryBuilder()
       .where('email = :id', { email })
       .getExists();
+  }
+
+  async findOne(email: string): Promise<User | undefined> {
+    return await this.usersRepository
+      .createQueryBuilder()
+      .where('email = :email', { email })
+      .getOne();
   }
 }

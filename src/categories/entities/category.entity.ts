@@ -6,6 +6,7 @@ import {
   JoinTable,
 } from 'typeorm';
 import { Post } from 'src/posts/entities/post.entity';
+import { CategoryStatus } from 'src/utils/types';
 @Entity()
 export class Category {
   @PrimaryGeneratedColumn('uuid')
@@ -19,13 +20,22 @@ export class Category {
   })
   slug: string;
 
-  @Column()
+  @Column({
+    nullable: true,
+    type: 'longtext',
+  })
   description: string;
 
-  @Column()
+  @Column({
+    type: 'enum',
+    enum: CategoryStatus,
+    default: CategoryStatus.DEACTIVE,
+  })
   status: string;
 
-  @Column()
+  @Column({
+    nullable: true,
+  })
   thumbnail: string;
 
   @ManyToMany((type) => Post, (post) => post.categories)
@@ -45,6 +55,8 @@ export class Category {
   @Column()
   createdAt: Date;
 
-  @Column()
+  @Column({
+    nullable: true,
+  })
   updateAt: Date;
 }

@@ -71,6 +71,7 @@ export class TagsController {
       ...updateTagDto,
       updatedAt: new Date(),
     });
+    console.log({ data });
     if (data) {
       res.send({
         data,

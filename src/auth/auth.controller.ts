@@ -6,11 +6,14 @@ import { SignInDto } from './dto/sign-in.dto';
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
-  @Post('signIn')
+
+  @Post('signin')
   async signIn(@Res() res: Response, @Body() signInDto: SignInDto) {
     const userData = await this.authService.signIn({
-      ...signInDto,
+      email: signInDto.email,
+      password: signInDto.password,
     });
-    console.log({ userData });
+
+    res.send({ data: userData });
   }
 }

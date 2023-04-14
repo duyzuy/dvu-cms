@@ -21,7 +21,6 @@ export class PostsService {
     newPost.description = postData.description;
     newPost.shortDescription = postData.shortDescription;
     newPost.thumbnail = postData.thumbnail;
-    // newPost.categories = postData.categories;
 
     return this.postsRepository.save(newPost);
   }

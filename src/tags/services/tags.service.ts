@@ -59,9 +59,21 @@ export class TagsService {
       const tag = await this.tagRepository.findOneByOrFail({ id });
 
       if (tag) {
-        tag.name = params.name;
-        tag.slug = params.slug;
-        tag.updateAt = params.updatedAt;
+        const isExistsSlug = await this.tagRepository
+          .createQueryBuilder()
+          .where('slug = :slug AND id != :id', { slug: params.slug, id: id })
+          .getExists();
+
+        if (isExistsSlug) {
+          return {
+            status: 'error',
+            message: 'Slug is already exists.',
+          };
+        } else {
+          tag.name = params.name;
+          tag.slug = params.slug;
+          tag.updateAt = params.updatedAt;
+        }
 
         return await this.tagRepository.save(tag);
       }

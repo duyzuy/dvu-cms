@@ -4,10 +4,12 @@ import {
   PrimaryGeneratedColumn,
   ManyToMany,
   JoinTable,
+  ManyToOne,
 } from 'typeorm';
 import { PostStatus, PostTypes } from 'src/utils/types';
 import { Category } from 'src/categories/entities/category.entity';
 import { Tag } from 'src/tags/entities/tag.entity';
+import { User } from 'src/users/entities/user.entity';
 @Entity()
 export class Post {
   @PrimaryGeneratedColumn('uuid')
@@ -63,6 +65,9 @@ export class Post {
     },
   })
   categories: Category[];
+
+  @ManyToOne(() => User, (user) => user.posts)
+  user: User;
 
   @ManyToMany((type) => Tag)
   @JoinTable({

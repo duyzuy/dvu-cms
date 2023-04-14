@@ -15,7 +15,13 @@ export class CreateTagDto extends BaseTagDto {
   createdAt: Date;
 }
 
-export class UpdateTagDto extends BaseTagDto {
+export class UpdateTagDto {
+  @IsNotEmpty()
+  name: string;
+
+  @IsNotEmpty()
+  slug: string;
+
   // @IsNotEmpty()
   updatedAt: Date;
 }
