@@ -11,24 +11,15 @@ import { APP_GUARD } from '@nestjs/core';
 import { JwtGuard, RolesGuard } from './auth/guard';
 
 import { PhotosModule } from './photos/photos.module';
+import { dataSourceOption } from 'db/data-source';
 @Module({
   imports: [
-    TypeOrmModule.forRoot({
-      type: 'mysql',
-      host: 'localhost',
-      port: 3306,
-      username: 'root',
-      password: '',
-      database: 'dvucms',
-      synchronize: true,
-      autoLoadEntities: true,
-    }),
+    TypeOrmModule.forRoot(dataSourceOption),
 
     UsersModule,
     PostsModule,
     CategoriesModule,
     TagsModule,
-    PhotosModule,
   ],
   providers: [
     UniqueConstraint,
