@@ -8,8 +8,8 @@ import {
   Param,
 } from '@nestjs/common';
 import { Response } from 'express';
-import { CreatePostDto } from './dto/create-post.dto';
-import { PostsService } from './posts.service';
+import { CreatePostDto } from '../dto/create-post.dto';
+import { PostsService } from '../services/posts.service';
 
 @Controller('posts')
 export class PostsController {

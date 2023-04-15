@@ -1,8 +1,9 @@
-export enum UserRoleType {
+export enum UserRole {
   SUPERADMIN = 'superadmin',
   ADMIN = 'admin',
   EDITOR = 'editor',
   VISITOR = 'visitor',
+  CREATOR = 'creator',
 }
 export interface User {
   id: string;
@@ -11,7 +12,7 @@ export interface User {
   userName: string;
   email: string;
   password: string;
-  role: UserRoleType;
+  role: UserRole;
   isActive: boolean;
   token: string;
   createdAt: string;
@@ -20,10 +21,10 @@ export interface User {
 
 export type CreateUserParams = Pick<
   User,
-  'email' | 'firstName' | 'lastName' | 'userName'
+  'email' | 'firstName' | 'lastName' | 'userName' | 'password' | 'role'
 >;
 
 export type UpdateUserParams = Pick<
   User,
-  'firstName' | 'lastName' | 'userName'
+  'firstName' | 'lastName' | 'userName' | 'role'
 >;

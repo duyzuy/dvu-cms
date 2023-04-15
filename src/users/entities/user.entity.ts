@@ -5,7 +5,7 @@ import {
   OneToMany,
   JoinColumn,
 } from 'typeorm';
-import { UserRoleType } from '../interfaces/user.interface';
+import { UserRole } from '../interfaces/user.interface';
 import { Post } from 'src/posts/entities/post.entity';
 import { Expose } from 'class-transformer';
 @Entity()
@@ -36,10 +36,10 @@ export class User {
 
   @Column({
     type: 'enum',
-    enum: UserRoleType,
-    default: UserRoleType.VISITOR,
+    enum: UserRole,
+    default: UserRole.VISITOR,
   })
-  role: UserRoleType;
+  role: UserRole;
 
   @OneToMany((type) => Post, (post) => post.user)
   posts: Post[];

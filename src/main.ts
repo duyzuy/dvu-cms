@@ -5,7 +5,7 @@ import { useContainer } from 'class-validator';
 import { CustomLogger } from './utils/CustomLogger';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
-    logger: ['debug', 'log', 'error', 'warn', 'verbose'],
+    // logger: ['debug', 'log', 'error', 'warn', 'verbose'],
   });
 
   app.useGlobalPipes(

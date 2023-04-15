@@ -10,13 +10,16 @@ import {
   ParseUUIDPipe,
   Param,
 } from '@nestjs/common';
-import { CategoriesService } from './categories.service';
+import { CategoriesService } from '../services/categories.service';
 import { Response } from 'express';
 import {
   CreateCategoryDto,
   UpdateCategoryDto,
-} from './dto/create-category.dto';
+} from '../dto/create-category.dto';
 import { removeScriptTag, removeSpecialChar } from 'src/helpers/regex';
+import { Roles } from 'src/auth/decorator/roles.decorator';
+import { UserRole } from 'src/users/interfaces/user.interface';
+@Roles(UserRole.SUPERADMIN, UserRole.ADMIN)
 @Controller('categories')
 export class CategoriesController {
   constructor(private categoryService: CategoriesService) {}

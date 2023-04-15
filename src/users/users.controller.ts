@@ -10,23 +10,38 @@ import {
   HttpStatus,
   Res,
   ParseUUIDPipe,
+  Query,
+  UseGuards,
 } from '@nestjs/common';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UsersService } from './users.service';
-
+import { JwtGuard } from '../auth/guard';
+import { Roles } from 'src/auth/decorator/roles.decorator';
+import { UserRole } from './interfaces/user.interface';
+//@UseGuards(JwtGuard) // used for global app module
+@Roles(UserRole.SUPERADMIN, UserRole.ADMIN)
 @Controller('users')
 export class UsersController {
   constructor(private usersService: UsersService) {}
+
   @Get()
-  async getAll(@Res() res: Response) {
-    const allUser = await this.usersService.getAllUsers();
+  async getAll(@Res() res: Response, @Query() { page, perPage }) {
+    const users = await this.usersService.getAllUsers({
+      take: Number(perPage),
+      page: Number(page),
+    });
 
     res.send({
-      statusCode: 1,
-      message: 'Get all users success',
-      data: allUser,
+      data: {
+        list: users.data,
+        currentPage: users.currentPage,
+        perPage: users.perPage,
+        totalPage: users.totalPage,
+        total: users.total,
+      },
+      status: 'success',
     });
   }
 
@@ -75,4 +90,11 @@ export class UsersController {
 
   @Delete(':id')
   delete(@Param('id') id: string) {}
+
+  @Get('/auth/profile')
+  async getProfile(@Res() res: Response, @Req() req: Request) {
+    console.log(req.user);
+
+    res.send({ data: req.user });
+  }
 }

@@ -31,7 +31,7 @@ export class Category {
     enum: CategoryStatus,
     default: CategoryStatus.DEACTIVE,
   })
-  status: string;
+  status: CategoryStatus;
 
   @Column({
     nullable: true,

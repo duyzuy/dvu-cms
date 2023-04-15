@@ -86,6 +86,8 @@ export class Post {
   @Column()
   createdAt: Date;
 
-  @Column()
-  updateAt: Date;
+  @Column({
+    nullable: true,
+  })
+  updatedAt: Date;
 }

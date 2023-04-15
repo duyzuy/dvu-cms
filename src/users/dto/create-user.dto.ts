@@ -1,6 +1,7 @@
-import { IsEmail, IsNotEmpty, MinLength } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsOptional, MinLength } from 'class-validator';
 import { Unique } from 'src/utils/UniqueValidation';
 import { User } from '../entities/user.entity';
+import { UserRole } from '../interfaces/user.interface';
 export class CreateUserDto {
   @IsEmail()
   @IsNotEmpty()
@@ -14,8 +15,8 @@ export class CreateUserDto {
   userName: string;
 
   @IsNotEmpty()
-  @MinLength(3, {
-    message: 'firstName minimun 10 charater',
+  @MinLength(2, {
+    message: 'firstName minimun 3 charater',
   })
   firstName: string;
 
@@ -24,4 +25,10 @@ export class CreateUserDto {
     message: 'lastName minimun 10 charater',
   })
   lastName: string;
+
+  @IsNotEmpty()
+  password: string;
+
+  @IsOptional()
+  role: UserRole;
 }

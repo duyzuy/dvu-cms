@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Category } from './entities/category.entity';
-import { CategoryCreateParams } from './interfaces/category.interface';
+import { Category } from '../entities/category.entity';
+import { CategoryCreateParams } from '../interfaces/category.interface';
 @Injectable()
 export class CategoriesService {
   constructor(

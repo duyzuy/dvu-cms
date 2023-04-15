@@ -1,17 +1,16 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-//entities
-import { User } from './users/entities/user.entity';
-import { Post } from './posts/entities/post.entity';
-import { Category } from './categories/entities/category.entity';
-import { Tag } from './tags/entities/tag.entity';
+
 //modules
 import { UsersModule } from './users/users.module';
 import { PostsModule } from './posts/posts.module';
 import { CategoriesModule } from './categories/categories.module';
 import { TagsModule } from './tags/tags.module';
 import { UniqueConstraint } from './utils/UniqueValidation';
+import { APP_GUARD } from '@nestjs/core';
+import { JwtGuard, RolesGuard } from './auth/guard';
 
+import { PhotosModule } from './photos/photos.module';
 @Module({
   imports: [
     TypeOrmModule.forRoot({
@@ -21,15 +20,26 @@ import { UniqueConstraint } from './utils/UniqueValidation';
       username: 'root',
       password: '',
       database: 'dvucms',
-      entities: [User, Post, Category, Tag],
-      synchronize: true, //shouldn't be used in production
+      synchronize: true,
       autoLoadEntities: true,
     }),
+
     UsersModule,
     PostsModule,
     CategoriesModule,
     TagsModule,
+    PhotosModule,
   ],
-  providers: [UniqueConstraint],
+  providers: [
+    UniqueConstraint,
+    {
+      provide: APP_GUARD,
+      useClass: JwtGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
+    },
+  ],
 })
 export class AppModule {}

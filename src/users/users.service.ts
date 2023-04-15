@@ -1,37 +1,96 @@
-import { Injectable, forwardRef, Inject } from '@nestjs/common';
+import {
+  Injectable,
+  forwardRef,
+  Inject,
+  ForbiddenException,
+  ParseUUIDPipe,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, TypeORMError } from 'typeorm';
 import { User } from './entities/user.entity';
 import {
   CreateUserParams,
   UpdateUserParams,
-  UserRoleType,
+  UserRole,
 } from './interfaces/user.interface';
+import * as bcrypt from 'bcrypt';
+import { removeScriptTag } from 'src/helpers/regex';
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
     private usersRepository: Repository<User>,
   ) {}
-  async getAllUsers(): Promise<User[]> {
-    return this.usersRepository.find();
+  async getAllUsers(query: {
+    take?: number;
+    page?: number;
+    order?: 'ASC' | 'DESC';
+  }) {
+    const take = query.take || 10;
+    const page = query.page || 1;
+    const order = query.order || 'DESC';
+
+    const skip = (page - 1) * take;
+
+    const [data, count] = await this.usersRepository
+      .createQueryBuilder()
+      .orderBy('createdAt', order)
+      .take(take)
+      .skip(skip)
+      .getManyAndCount();
+
+    return {
+      data: data,
+      total: count,
+      perPage: take,
+      currentPage: page,
+      totalPage: Math.ceil(count / take),
+    };
   }
 
-  getUserById(id: string): Promise<User | null> {
-    return this.usersRepository.findOneBy({ id });
+  async getUserById(id: ParseUUIDPipe): Promise<User | null> {
+    const user = await this.usersRepository
+      .createQueryBuilder()
+      .where('id = :id', { id })
+      .getOne();
+
+    if (user) {
+      delete user.password;
+      return user;
+    }
+    return null;
   }
 
-  createUser(userDetail: CreateUserParams) {
-    const newUser = this.usersRepository.create({
-      ...userDetail,
-      role: UserRoleType.VISITOR,
-      token: '',
-      isActive: false,
-      password: '123',
-      createdAt: new Date(),
-    });
+  async createUser(userDetail: CreateUserParams) {
+    const saltOrRounds = 10;
+    const passwordHash = await bcrypt.hash(userDetail.password, saltOrRounds);
+    const firstName = removeScriptTag(userDetail.firstName);
+    const lastName = removeScriptTag(userDetail.lastName);
+    const email = removeScriptTag(userDetail.email);
+    const userName = removeScriptTag(userDetail.userName);
+    try {
+      const newUser = this.usersRepository.create({
+        email: email,
+        lastName: lastName,
+        firstName: firstName,
+        password: passwordHash,
+        userName: userName,
+        role: userDetail.role,
+        token: '',
+        isActive: false,
+        createdAt: new Date(),
+      });
 
-    return this.usersRepository.save(newUser);
+      await this.usersRepository.save(newUser);
+      delete newUser.password;
+
+      return newUser;
+    } catch (error) {
+      if (error instanceof TypeORMError) {
+        throw new ForbiddenException(error.message);
+      }
+      throw error;
+    }
   }
   updateUserById(id: string, userDetail: UpdateUserParams) {
     return this.usersRepository
@@ -41,7 +100,7 @@ export class UsersService {
       .where('id = :id', { id })
       .execute();
   }
-  isEmailExists(email: string): Promise<boolean> {
+  async isEmailExists(email: string): Promise<boolean> {
     return this.usersRepository
       .createQueryBuilder()
       .where('email = :id', { email })

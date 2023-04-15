@@ -1,5 +1,7 @@
 import { IsEmail, IsNotEmpty } from 'class-validator';
-export class SigUpDto {
+import { User } from 'src/users/entities/user.entity';
+import { Unique } from 'src/utils/UniqueValidation';
+export class SignUpDto {
   @IsNotEmpty()
   firstName: string;
 
@@ -9,6 +11,10 @@ export class SigUpDto {
   @IsEmail()
   @IsNotEmpty()
   email: string;
+
+  @IsNotEmpty()
+  @Unique(User)
+  userName: string;
 
   @IsNotEmpty()
   password: string;

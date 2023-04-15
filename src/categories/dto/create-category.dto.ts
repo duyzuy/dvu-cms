@@ -11,5 +11,5 @@ export class UpdateCategoryDto extends CategoryDto {
   slug: string;
 
   // @IsNotEmpty()
-  updateAt: Date;
+  updatedAt: Date;
 }
