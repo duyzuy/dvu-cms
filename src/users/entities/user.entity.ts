@@ -41,7 +41,7 @@ export class User {
   })
   role: UserRole;
 
-  @OneToMany((type) => Post, (post) => post.user)
+  @OneToMany((type) => Post, (post) => post.userId)
   posts: Post[];
 
   @Column({ default: true })

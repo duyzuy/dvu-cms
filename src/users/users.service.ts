@@ -15,6 +15,7 @@ import {
 } from './interfaces/user.interface';
 import * as bcrypt from 'bcrypt';
 import { removeScriptTag } from 'src/helpers/regex';
+import { CreateUserDto } from './dto/create-user.dto';
 @Injectable()
 export class UsersService {
   constructor(
@@ -61,13 +62,21 @@ export class UsersService {
     return null;
   }
 
-  async createUser(userDetail: CreateUserParams) {
+  async createUser({
+    firstName,
+    lastName,
+    email,
+    userName,
+    password,
+    role,
+  }: CreateUserDto) {
     const saltOrRounds = 10;
-    const passwordHash = await bcrypt.hash(userDetail.password, saltOrRounds);
-    const firstName = removeScriptTag(userDetail.firstName);
-    const lastName = removeScriptTag(userDetail.lastName);
-    const email = removeScriptTag(userDetail.email);
-    const userName = removeScriptTag(userDetail.userName);
+    const passwordHash = await bcrypt.hash(password, saltOrRounds);
+    firstName = removeScriptTag(firstName);
+    lastName = removeScriptTag(lastName);
+    email = removeScriptTag(email);
+    userName = removeScriptTag(userName);
+
     try {
       const newUser = this.usersRepository.create({
         email: email,
@@ -75,7 +84,7 @@ export class UsersService {
         firstName: firstName,
         password: passwordHash,
         userName: userName,
-        role: userDetail.role,
+        role: role,
         token: '',
         isActive: false,
         createdAt: new Date(),
@@ -108,9 +117,17 @@ export class UsersService {
   }
 
   async findOne(email: string): Promise<User | undefined> {
-    return await this.usersRepository
-      .createQueryBuilder()
-      .where('email = :email', { email })
-      .getOne();
+    try {
+      const user = await this.usersRepository
+        .createQueryBuilder()
+        .where('email = :email', { email })
+        .getOne();
+
+      if (user) {
+        return user;
+      }
+    } catch (error) {
+      throw new ForbiddenException('email not found');
+    }
   }
 }

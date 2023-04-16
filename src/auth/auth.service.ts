@@ -3,6 +3,9 @@ import {
   UnauthorizedException,
   Inject,
   forwardRef,
+  NotFoundException,
+  HttpException,
+  HttpStatus,
 } from '@nestjs/common';
 
 import { UsersService } from '../users/users.service';
@@ -20,11 +23,17 @@ export class AuthService {
   ) {}
 
   async signIn({ email, password }: SignInDto) {
+    //Check user exists
     const user = await this.userService.findOne(email);
+    if (!user) {
+      throw new NotFoundException('Email not exists.', 'error');
+    }
 
+    //Check password match if user exists
     const isMatch = await bcrypt.compare(password, user.password);
+
     if (!isMatch) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException('password or email is not correct');
     }
 
     const accessToken = await this.signToken({
@@ -36,17 +45,29 @@ export class AuthService {
 
   async signUp({ email, password, firstName, lastName, userName }: SignUpDto) {
     const saltOrRounds = 10;
-    const passwordHash = await bcrypt.hash(password, saltOrRounds);
-    const newUser = await this.userService.createUser({
-      email: email,
-      firstName: firstName,
-      lastName: lastName,
-      password: passwordHash,
-      userName: userName,
-      role: UserRole.SUPERADMIN,
-    });
+    try {
+      const newUser = await this.userService.createUser({
+        email: email,
+        firstName: firstName,
+        lastName: lastName,
+        password: password,
+        userName: userName,
+        role: UserRole.SUPERADMIN,
+      });
 
-    return newUser;
+      return newUser;
+    } catch (error) {
+      throw new HttpException(
+        {
+          status: HttpStatus.FORBIDDEN,
+          error: 'error',
+        },
+        HttpStatus.FORBIDDEN,
+        {
+          cause: error,
+        },
+      );
+    }
   }
 
   async signToken({

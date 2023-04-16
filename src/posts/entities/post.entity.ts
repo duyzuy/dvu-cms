@@ -5,11 +5,13 @@ import {
   ManyToMany,
   JoinTable,
   ManyToOne,
+  JoinColumn,
 } from 'typeorm';
 import { PostStatus, PostTypes } from 'src/utils/types';
 import { Category } from 'src/categories/entities/category.entity';
 import { Tag } from 'src/tags/entities/tag.entity';
 import { User } from 'src/users/entities/user.entity';
+
 @Entity()
 export class Post {
   @PrimaryGeneratedColumn('uuid')
@@ -19,7 +21,7 @@ export class Post {
   slug: string;
 
   @Column({ type: 'varchar' })
-  title: string;
+  name: string;
 
   @Column({
     nullable: true,
@@ -50,7 +52,7 @@ export class Post {
     enum: PostTypes,
     default: PostTypes.POST,
   })
-  postType: PostStatus;
+  postType: PostTypes;
 
   @ManyToMany((type) => Category, (category) => category.posts)
   @JoinTable({
@@ -64,10 +66,11 @@ export class Post {
       referencedColumnName: 'id',
     },
   })
-  categories: Category[];
+  categories: Pick<Category, 'id' | 'slug' | 'name' | 'status'>[];
 
-  @ManyToOne(() => User, (user) => user.posts)
-  user: User;
+  @ManyToOne(() => User)
+  @JoinColumn({ name: 'userId', referencedColumnName: 'id' })
+  userId: string;
 
   @ManyToMany((type) => Tag)
   @JoinTable({
@@ -81,7 +84,7 @@ export class Post {
       referencedColumnName: 'id',
     },
   })
-  tags: Tag[];
+  tags: Pick<Tag, 'id' | 'slug' | 'name'>[];
 
   @Column()
   createdAt: Date;

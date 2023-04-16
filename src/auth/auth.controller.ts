@@ -25,6 +25,7 @@ export class AuthController {
       email: signInDto.email,
       password: signInDto.password,
     });
+
     res.send({ data: userData });
   }
   @Public()

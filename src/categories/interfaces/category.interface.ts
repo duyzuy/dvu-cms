@@ -7,7 +7,10 @@ export interface Category {
   slug: string;
   description: string;
   status: CategoryStatus;
-  posts: Post[];
+  posts: Pick<
+    Post,
+    'id' | 'name' | 'slug' | 'thumbnail' | 'shortDescription'
+  >[];
   thumbnail: string;
   createdAt: Date;
   updateAt: Date;

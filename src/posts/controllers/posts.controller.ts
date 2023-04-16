@@ -17,7 +17,10 @@ export class PostsController {
 
   @Get()
   async getAllPosts(@Res() res: Response) {
-    const posts = await this.postsService.getAllPosts();
+    const posts = await this.postsService.getAllPosts({
+      page: 1,
+      take: 10,
+    });
 
     res.send({
       data: posts,
@@ -27,16 +30,16 @@ export class PostsController {
 
   @Post()
   async create(@Res() res: Response, @Body() createPostDto: CreatePostDto) {
-    // const newPost = await this.postsService.createPost({
-    //   ...createPostDto,
-    // });
-    // if (newPost) {
-    //
-    // }
-    res.send({
-      data: '',
-      message: 'Create Post success',
+    const newPost = await this.postsService.createPost({
+      ...createPostDto,
     });
+    console.log({ newPost });
+    if (newPost) {
+      res.send({
+        data: newPost,
+        message: 'Create Post success',
+      });
+    }
   }
 
   @Get(':id')

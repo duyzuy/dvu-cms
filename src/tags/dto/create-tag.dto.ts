@@ -1,4 +1,4 @@
-import { IsNotEmpty } from 'class-validator';
+import { IsNotEmpty, IsOptional } from 'class-validator';
 import { Unique } from 'src/utils/UniqueValidation';
 import { Tag } from '../entities/tag.entity';
 
@@ -22,6 +22,6 @@ export class UpdateTagDto {
   @IsNotEmpty()
   slug: string;
 
-  // @IsNotEmpty()
+  // @IsOptional()
   updatedAt: Date;
 }

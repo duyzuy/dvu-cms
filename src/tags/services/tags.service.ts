@@ -72,7 +72,7 @@ export class TagsService {
         } else {
           tag.name = params.name;
           tag.slug = params.slug;
-          tag.updateAt = params.updatedAt;
+          tag.updatedAt = params.updatedAt;
         }
 
         return await this.tagRepository.save(tag);

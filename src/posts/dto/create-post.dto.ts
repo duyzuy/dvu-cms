@@ -1,10 +1,12 @@
-import { IsNotEmpty } from 'class-validator';
+import { IsNotEmpty, IsOptional } from 'class-validator';
+import { Category } from 'src/categories/entities/category.entity';
+import { Tag } from 'src/tags/interfaces/tag.interface';
 import { PostStatus, PostTypes } from 'src/utils/types';
 import { Unique } from 'src/utils/UniqueValidation';
 import { Post } from '../entities/post.entity';
 export class CreatePostDto {
   @IsNotEmpty()
-  title: string;
+  name: string;
 
   @IsNotEmpty()
   @Unique(Post)
@@ -13,8 +15,10 @@ export class CreatePostDto {
   @IsNotEmpty()
   thumbnail: string;
 
+  @IsOptional()
   description: string;
 
+  @IsOptional()
   shortDescription: string;
 
   @IsNotEmpty()
@@ -24,12 +28,17 @@ export class CreatePostDto {
   postType: PostTypes;
 
   @IsNotEmpty()
-  categories: string;
+  categories: Pick<Category, 'id' | 'slug' | 'name' | 'status'>[];
 
   @IsNotEmpty()
-  tags: string;
+  tags: Pick<Tag, 'id' | 'slug' | 'name'>[];
 
-  createdAt: string;
+  @IsNotEmpty()
+  userId: string;
 
-  updateAt: string;
+  @IsOptional()
+  createdAt: Date;
+
+  @IsOptional()
+  updateAt: Date;
 }

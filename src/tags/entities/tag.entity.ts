@@ -40,5 +40,5 @@ export class Tag {
   @Column({
     nullable: true,
   })
-  updateAt: Date;
+  updatedAt: Date;
 }
