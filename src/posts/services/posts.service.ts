@@ -1,4 +1,11 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import {
+  ForbiddenException,
+  HttpStatus,
+  Injectable,
+  NotFoundException,
+  Inject,
+  ParseUUIDPipe,
+} from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Post } from '../entities/post.entity';
@@ -38,13 +45,17 @@ export class PostsService {
       .skip(skip)
       .getManyAndCount();
 
-    return {
-      data: data,
-      total: count,
-      perPage: take,
-      currentPage: page,
-      totalPage: Math.ceil(count / take),
-    };
+    if (data.length > 0) {
+      return {
+        lists: data,
+        total: count,
+        perPage: take,
+        currentPage: page,
+        totalPage: Math.ceil(count / take),
+      };
+    } else {
+      throw new NotFoundException('Not found post');
+    }
   }
 
   async createPost({
@@ -71,11 +82,17 @@ export class PostsService {
       newPost.thumbnail = thumbnail;
       newPost.createdAt = createdAt;
 
-      const catList = await this.categoryService.getCategoriesByIds([
-        ...categories,
-      ]);
+      let catList = [];
+      let tagList = [];
 
-      const tagList = await this.tagService.getTagsByIds([...tags]);
+      const tagPromises = tags.map(
+        async (tagId) => await this.tagService.getOneById(tagId),
+      );
+      const categoryPromises = categories.map(
+        async (catId) => await this.categoryService.getOneById(catId),
+      );
+      tagList = await Promise.all(tagPromises);
+      catList = await Promise.all(categoryPromises);
 
       const user = await this.userService.findOne(userId);
       newPost.categories = catList;
@@ -94,5 +111,11 @@ export class PostsService {
 
   getPostBySlug(slug: string): Promise<Post> {
     return this.postsRepository.findOneBy({ slug });
+  }
+  async getPostsByCategoryId(id: ParseUUIDPipe) {
+    const queryBuilder = this.postsRepository.createQueryBuilder();
+    return await queryBuilder
+      .leftJoinAndSelect('categories', 'category')
+      .getMany();
   }
 }

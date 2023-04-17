@@ -7,12 +7,14 @@ import {
   ParseUUIDPipe,
   Param,
   Req,
+  HttpStatus,
 } from '@nestjs/common';
 import { Response } from 'express';
 import { CreatePostDto } from '../dto/create-post.dto';
 import { PostsService } from '../services/posts.service';
 import { Roles } from 'src/auth/decorator/roles.decorator';
-import { UserRole } from 'src/users/interfaces/user.interface';
+import { User, UserRole } from 'src/users/interfaces/user.interface';
+import { RequestWithAuth } from 'src/interfaces/request.interface';
 @Roles(UserRole.SUPERADMIN, UserRole.ADMIN)
 @Controller('posts')
 export class PostsController {
@@ -25,28 +27,29 @@ export class PostsController {
       take: 10,
     });
 
-    res.send({
+    res.status(200).send({
       data: posts,
       message: 'Get posts success',
+      statsuCode: HttpStatus.OK,
     });
   }
 
   @Post()
   async create(
     @Res() res: Response,
-    @Req() req,
+    @Req() req: RequestWithAuth,
     @Body() createPostDto: CreatePostDto,
   ) {
     const newPost = await this.postsService.createPost({
       ...createPostDto,
       userId: req?.user?.id,
     });
-    if (newPost) {
-      res.send({
-        data: newPost,
-        message: 'Create Post success',
-      });
-    }
+
+    res.send({
+      data: newPost,
+      message: 'Created success',
+      statusCode: HttpStatus.CREATED,
+    });
   }
 
   @Get(':id')

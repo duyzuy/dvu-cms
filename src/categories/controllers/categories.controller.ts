@@ -20,10 +20,14 @@ import {
 import { removeScriptTag, removeSpecialChar } from 'src/helpers/regex';
 import { Roles } from 'src/auth/decorator/roles.decorator';
 import { UserRole } from 'src/users/interfaces/user.interface';
+import { PostsService } from 'src/posts/services/posts.service';
 @Roles(UserRole.SUPERADMIN, UserRole.ADMIN)
 @Controller('categories')
 export class CategoriesController {
-  constructor(private categoryService: CategoriesService) {}
+  constructor(
+    private categoryService: CategoriesService,
+    private postService: PostsService,
+  ) {}
 
   @Get()
   async index(@Res() res: Response, @Query() { page, perPage }) {
@@ -113,7 +117,7 @@ export class CategoriesController {
       });
     } else {
       const categories = await this.categoryService.getCategoriesByIds(ids);
-      if (categories) {
+      if (categories.length > 0) {
         res.send(categories);
       } else {
         res.send({
@@ -122,5 +126,10 @@ export class CategoriesController {
         });
       }
     }
+  }
+  @Get(':id/posts')
+  async getPostsBycategoryId(@Param() id: ParseUUIDPipe, @Res() res: Response) {
+    // const posts = await this.postService.getPostsByCategoryId(id);
+    // console.log(posts);
   }
 }

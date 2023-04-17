@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "077cce29-c51d-40d9-9869-6c1be10ac0a8",
+		"_postman_id": "250287c5-c6c5-46c6-a451-a2a8259bd50b",
 		"name": "dvu-cms",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "6364278"
@@ -13,7 +13,10 @@
 					"name": "Create",
 					"request": {
 						"method": "GET",
-						"header": []
+						"header": [],
+						"url": {
+							"raw": ""
+						}
 					},
 					"response": []
 				},
@@ -21,7 +24,10 @@
 					"name": "Get tags",
 					"request": {
 						"method": "GET",
-						"header": []
+						"header": [],
+						"url": {
+							"raw": ""
+						}
 					},
 					"response": []
 				},
@@ -29,12 +35,26 @@
 					"name": "Update",
 					"request": {
 						"method": "GET",
-						"header": []
+						"header": [],
+						"url": {
+							"raw": ""
+						}
 					},
 					"response": []
 				},
 				{
 					"name": "Get many tags",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": ""
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get tag",
 					"request": {
 						"method": "GET",
 						"header": []
@@ -49,8 +69,36 @@
 				{
 					"name": "Create",
 					"request": {
-						"method": "GET",
-						"header": []
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InN1cGVyYWRtaW5AZ21haWwuY29tIiwidXNlcklkIjoiODE3NDY0NTktYzM4Yi00Y2Y0LWIxNGQtZGNjOTkwZWQ5OGE1IiwiaWF0IjoxNjgxNzQwMTU3LCJleHAiOjE2ODE4MjY1NTd9.UhEKQcmN_gwqiHFReCparJqagWGKDbv09gm5gKA9nGk",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Category 1\",\n    \"slug\": \"category-1\",\n    \"thumbnail\": \"image.jpg\",\n    \"description\": \"noi dung mo ta danh muc\",\n    \"status\": \"active\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/categories",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"categories"
+							]
+						}
 					},
 					"response": []
 				},
@@ -58,7 +106,10 @@
 					"name": "Get all",
 					"request": {
 						"method": "GET",
-						"header": []
+						"header": [],
+						"url": {
+							"raw": ""
+						}
 					},
 					"response": []
 				},
@@ -103,7 +154,10 @@
 					"name": "Get detail",
 					"request": {
 						"method": "GET",
-						"header": []
+						"header": [],
+						"url": {
+							"raw": ""
+						}
 					},
 					"response": []
 				},
@@ -143,6 +197,14 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Post by category id",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
 				}
 			]
 		},
@@ -153,7 +215,10 @@
 					"name": "Get users",
 					"request": {
 						"method": "GET",
-						"header": []
+						"header": [],
+						"url": {
+							"raw": ""
+						}
 					},
 					"response": []
 				},
@@ -161,7 +226,10 @@
 					"name": "Create user",
 					"request": {
 						"method": "GET",
-						"header": []
+						"header": [],
+						"url": {
+							"raw": ""
+						}
 					},
 					"response": []
 				},
@@ -169,7 +237,10 @@
 					"name": "Get user detail",
 					"request": {
 						"method": "GET",
-						"header": []
+						"header": [],
+						"url": {
+							"raw": ""
+						}
 					},
 					"response": []
 				},
@@ -177,7 +248,10 @@
 					"name": "Get Profile",
 					"request": {
 						"method": "GET",
-						"header": []
+						"header": [],
+						"url": {
+							"raw": ""
+						}
 					},
 					"response": []
 				}
@@ -249,7 +323,10 @@
 					"name": "Get all post",
 					"request": {
 						"method": "GET",
-						"header": []
+						"header": [],
+						"url": {
+							"raw": ""
+						}
 					},
 					"response": []
 				},
@@ -295,7 +372,10 @@
 			"name": "Create User",
 			"request": {
 				"method": "GET",
-				"header": []
+				"header": [],
+				"url": {
+					"raw": ""
+				}
 			},
 			"response": []
 		}

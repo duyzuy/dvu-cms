@@ -17,5 +17,6 @@ import { forwardRef } from '@nestjs/common';
     forwardRef(() => TagsModule),
     forwardRef(() => UsersModule),
   ],
+  exports: [PostsService],
 })
 export class PostsModule {}

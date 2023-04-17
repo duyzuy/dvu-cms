@@ -6,6 +6,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Post } from 'src/posts/entities/post.entity';
 import { Repository } from 'typeorm';
 import { Category } from '../entities/category.entity';
 import { CategoryCreateParams } from '../interfaces/category.interface';
@@ -13,7 +14,7 @@ import { CategoryCreateParams } from '../interfaces/category.interface';
 export class CategoriesService {
   constructor(
     @InjectRepository(Category)
-    private categoryRepository: Repository<Category>,
+    private categoryRepository: Repository<Category>, // private postRepository: Repository<Post>,
   ) {}
 
   async getAll(query: {
@@ -49,24 +50,22 @@ export class CategoriesService {
 
   async getCategoriesByIds(ids: string[]) {
     const queryBuilder = this.categoryRepository.createQueryBuilder();
+    try {
+      const categoryList = await queryBuilder
+        .where('id IN (:...categories)', { categories: ids })
+        .orderBy('createdAt', 'DESC')
+        .getMany();
 
-    return await queryBuilder
-      .where('id IN (:...categories)', { categories: ids })
-      .orderBy('createdAt', 'DESC')
-      .getMany();
+      console.log({ categoryList });
+      return categoryList;
+    } catch (error) {
+      return error;
+    }
   }
 
   async getOneById(id: string) {
     const queryBuilder = this.categoryRepository.createQueryBuilder();
-
-    return await queryBuilder
-      .where('id = :id', { id })
-      .getOne()
-      .then((data) => data)
-      .catch((error) => {
-        console.log(error);
-        return error;
-      });
+    return await queryBuilder.where('id = :id', { id }).getOne();
   }
 
   create({

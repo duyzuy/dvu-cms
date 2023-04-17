@@ -1,4 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { Tag } from '../entities/tag.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -46,8 +50,13 @@ export class TagsService {
       totalPage: Math.ceil(count / take),
     };
   }
-  getOne(id: string) {
-    return this.tagRepository.findOneByOrFail({ id });
+  async getOneById(id: string) {
+    const queryBuilder = this.tagRepository.createQueryBuilder();
+    return await queryBuilder
+      .where('id = :id', {
+        id,
+      })
+      .getOne();
   }
 
   async updateOne(

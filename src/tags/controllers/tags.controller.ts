@@ -47,6 +47,17 @@ export class TagsController {
     }
   }
 
+  @Get(':id')
+  async getDetail(
+    @Res() res: Response,
+    @Param('id', ParseUUIDPipe) id: string,
+  ) {
+    const tag = await this.tagService.getOneById(id);
+    res.send({
+      data: tag,
+      status: 'success',
+    });
+  }
   @Post()
   async create(@Res() res: Response, @Body() createTagDto: CreateTagDto) {
     const tag = await this.tagService.createTag({
