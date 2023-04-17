@@ -15,7 +15,6 @@ export class TagsService {
 
     return this.tagRepository.save(tag);
   }
-
   async getAllTags(query: {
     take?: number;
     page?: number;
@@ -87,5 +86,14 @@ export class TagsService {
       .delete()
       .where('id = :id', { id })
       .execute();
+  }
+
+  async getTagsByIds(ids: string[]) {
+    const queryBuilder = this.tagRepository.createQueryBuilder();
+
+    return await queryBuilder
+      .where('id IN (:...tags)', { tags: ids })
+      .orderBy('createdAt', 'DESC')
+      .getMany();
   }
 }

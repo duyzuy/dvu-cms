@@ -8,6 +8,7 @@ import {
   ParseUUIDPipe,
   Param,
   Delete,
+  HttpStatus,
 } from '@nestjs/common';
 import { Controller } from '@nestjs/common';
 import { Response } from 'express';
@@ -24,17 +25,26 @@ export class TagsController {
       take: Number(perPage),
       page: Number(page),
     });
-
-    res.send({
-      data: {
-        list: tagData.data,
-        currentPage: tagData.currentPage,
-        perPage: tagData.perPage,
-        totalPage: tagData.totalPage,
-        total: tagData.total,
-      },
-      status: 'success',
-    });
+    if (tagData.data.length > 0) {
+      res.send({
+        data: {
+          list: tagData.data,
+          currentPage: tagData.currentPage,
+          perPage: tagData.perPage,
+          totalPage: tagData.totalPage,
+          total: tagData.total,
+        },
+        status: 'success',
+      });
+    } else {
+      res.send({
+        data: {
+          statusCode: HttpStatus.NOT_FOUND,
+          message: 'No tags',
+        },
+        status: 'success',
+      });
+    }
   }
 
   @Post()
@@ -96,5 +106,25 @@ export class TagsController {
       status = 'error';
     }
     res.send({ status, message });
+  }
+
+  @Post('many')
+  async getTagsByIds(@Res() res: Response, @Body() ids: string[]) {
+    if (!ids) {
+      res.send({
+        statusCode: HttpStatus.BAD_REQUEST,
+        message: 'ids must be in array string',
+      });
+    } else {
+      const categories = await this.tagService.getTagsByIds(ids);
+      if (categories) {
+        res.send(categories);
+      } else {
+        res.send({
+          statusCode: HttpStatus.NOT_FOUND,
+          message: 'tags not found.',
+        });
+      }
+    }
   }
 }

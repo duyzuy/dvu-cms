@@ -1,4 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  ForbiddenException,
+  HttpStatus,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Category } from '../entities/category.entity';
@@ -21,24 +27,46 @@ export class CategoriesService {
 
     const skip = (page - 1) * take;
 
-    const [data, count] = await this.categoryRepository
-      .createQueryBuilder()
-      .orderBy('createdAt', order)
-      .take(take)
-      .skip(skip)
-      .getManyAndCount();
+    try {
+      const [data, count] = await this.categoryRepository
+        .createQueryBuilder()
+        .orderBy('createdAt', order)
+        .take(take)
+        .skip(skip)
+        .getManyAndCount();
 
-    return {
-      data: data,
-      total: count,
-      perPage: take,
-      currentPage: page,
-      totalPage: Math.ceil(count / take),
-    };
+      return {
+        data: data,
+        total: count,
+        perPage: take,
+        currentPage: page,
+        totalPage: Math.ceil(count / take),
+      };
+    } catch (error) {
+      throw new ForbiddenException('Get all post fail.');
+    }
   }
 
-  getOneById(id: string) {
-    return this.categoryRepository.findOneByOrFail({ id });
+  async getCategoriesByIds(ids: string[]) {
+    const queryBuilder = this.categoryRepository.createQueryBuilder();
+
+    return await queryBuilder
+      .where('id IN (:...categories)', { categories: ids })
+      .orderBy('createdAt', 'DESC')
+      .getMany();
+  }
+
+  async getOneById(id: string) {
+    const queryBuilder = this.categoryRepository.createQueryBuilder();
+
+    return await queryBuilder
+      .where('id = :id', { id })
+      .getOne()
+      .then((data) => data)
+      .catch((error) => {
+        console.log(error);
+        return error;
+      });
   }
 
   create({
@@ -49,16 +77,20 @@ export class CategoriesService {
     description,
     createdAt,
   }: CategoryCreateParams) {
-    const category = new Category();
+    try {
+      const category = new Category();
 
-    category.name = name;
-    category.slug = slug;
-    category.status = status;
-    category.thumbnail = thumbnail;
-    category.description = description;
-    category.createdAt = createdAt || new Date();
+      category.name = name;
+      category.slug = slug;
+      category.status = status;
+      category.thumbnail = thumbnail;
+      category.description = description;
+      category.createdAt = createdAt || new Date();
 
-    return this.categoryRepository.save(category);
+      return this.categoryRepository.save(category);
+    } catch (error) {
+      throw new ForbiddenException('Create category fail/');
+    }
   }
 
   async updateOne(
@@ -70,39 +102,59 @@ export class CategoriesService {
       updatedAt: Date;
     },
   ) {
-    try {
-      const category = await this.categoryRepository.findOneByOrFail({ id });
+    return await this.categoryRepository
+      .findOneByOrFail({ id })
+      .then(async (category) => {
+        const queryBuilder = this.categoryRepository.createQueryBuilder();
 
-      if (category) {
-        const isExistsSlug = await this.categoryRepository
-          .createQueryBuilder()
-          .where('slug = :slug AND id != :id', { slug: params.slug, id: id })
+        const isExistsSlug = await queryBuilder
+          .where('id != :id AND slug = :slug', {
+            id: category.id,
+            slug: params.slug,
+          })
           .getExists();
 
         if (isExistsSlug) {
           return {
-            status: 'error',
-            message: 'Slug is already exists.',
+            statusCode: HttpStatus.CONFLICT,
+            message: 'Slug already exists.',
           };
         } else {
-          category.name = params.name;
-          category.slug = params.slug;
-          category.description = params.description;
-          category.updateAt = params.updatedAt;
-        }
+          const updateCat = await queryBuilder
+            .update()
+            .set({
+              name: params.name,
+              slug: params.slug,
+              description: params.description,
+              updatedAt: params.updatedAt,
+            })
+            .where('id = :id', { id: category.id })
+            .execute();
 
-        return await this.categoryRepository.save(category);
-      }
-    } catch (error) {
-      console.log(error);
-    }
+          if (updateCat.affected === 1) {
+            return await queryBuilder
+              .where('id = :id', { id: category.id })
+              .getOne();
+          } else {
+            return {
+              statusCode: HttpStatus.FORBIDDEN,
+              message: 'Update fail',
+            };
+          }
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        throw new NotFoundException('Category not found');
+      });
   }
 
-  deleteOne(id: string) {
-    return this.categoryRepository
-      .createQueryBuilder()
-      .delete()
-      .where('id = :id', { id })
-      .execute();
+  async deleteOne(id: string) {
+    const queryBuilder = this.categoryRepository.createQueryBuilder();
+    try {
+      return await queryBuilder.where('id = :id', { id }).execute();
+    } catch (error) {
+      throw new ForbiddenException('Delete category fail');
+    }
   }
 }

@@ -28,12 +28,12 @@ export class CreatePostDto {
   postType: PostTypes;
 
   @IsNotEmpty()
-  categories: Pick<Category, 'id' | 'slug' | 'name' | 'status'>[];
+  categories: string[];
 
   @IsNotEmpty()
-  tags: Pick<Tag, 'id' | 'slug' | 'name'>[];
+  tags: string[];
 
-  @IsNotEmpty()
+  @IsOptional()
   userId: string;
 
   @IsOptional()

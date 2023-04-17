@@ -6,11 +6,14 @@ import {
   Post,
   ParseUUIDPipe,
   Param,
+  Req,
 } from '@nestjs/common';
 import { Response } from 'express';
 import { CreatePostDto } from '../dto/create-post.dto';
 import { PostsService } from '../services/posts.service';
-
+import { Roles } from 'src/auth/decorator/roles.decorator';
+import { UserRole } from 'src/users/interfaces/user.interface';
+@Roles(UserRole.SUPERADMIN, UserRole.ADMIN)
 @Controller('posts')
 export class PostsController {
   constructor(private postsService: PostsService) {}
@@ -29,11 +32,15 @@ export class PostsController {
   }
 
   @Post()
-  async create(@Res() res: Response, @Body() createPostDto: CreatePostDto) {
+  async create(
+    @Res() res: Response,
+    @Req() req,
+    @Body() createPostDto: CreatePostDto,
+  ) {
     const newPost = await this.postsService.createPost({
       ...createPostDto,
+      userId: req?.user?.id,
     });
-    console.log({ newPost });
     if (newPost) {
       res.send({
         data: newPost,

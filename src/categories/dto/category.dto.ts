@@ -2,6 +2,7 @@ import { IsNotEmpty, IsString, Matches } from 'class-validator';
 import { CategoryStatus } from 'src/utils/types';
 import { Unique } from 'src/utils/UniqueValidation';
 import { Category } from '../entities/category.entity';
+import { UniqueWithParams } from 'src/utils/UpdateUniqueField';
 
 export class CategoryDto {
   @IsNotEmpty()

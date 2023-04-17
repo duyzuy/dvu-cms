@@ -58,5 +58,5 @@ export class Category {
   @Column({
     nullable: true,
   })
-  updateAt: Date;
+  updatedAt: Date;
 }

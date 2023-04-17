@@ -12,6 +12,7 @@ import { JwtGuard, RolesGuard } from './auth/guard';
 
 import { PhotosModule } from './photos/photos.module';
 import { dataSourceOption } from './database/data-source';
+import { UniqueWithParamsConstraint } from './utils/UpdateUniqueField';
 @Module({
   imports: [
     TypeOrmModule.forRoot(dataSourceOption),
@@ -22,6 +23,7 @@ import { dataSourceOption } from './database/data-source';
   ],
   providers: [
     UniqueConstraint,
+    UniqueWithParamsConstraint,
     {
       provide: APP_GUARD,
       useClass: JwtGuard,

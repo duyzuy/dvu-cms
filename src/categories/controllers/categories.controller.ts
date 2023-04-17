@@ -9,6 +9,7 @@ import {
   Put,
   ParseUUIDPipe,
   Param,
+  ParseArrayPipe,
 } from '@nestjs/common';
 import { CategoriesService } from '../services/categories.service';
 import { Response } from 'express';
@@ -67,9 +68,10 @@ export class CategoriesController {
     });
   }
 
+  @Put(':id')
   async update(
-    @Res() res: Response,
     @Param('id', ParseUUIDPipe) id: string,
+    @Res() res: Response,
     @Body() updateCategoryDto: UpdateCategoryDto,
   ) {
     const name = removeSpecialChar(updateCategoryDto.name);
@@ -82,16 +84,43 @@ export class CategoriesController {
       description: description,
       updatedAt: new Date(),
     });
-    console.log({ data });
-    if (data) {
-      res.send({
-        data,
-        status: 'success',
-      });
+
+    res.send(data);
+  }
+
+  @Get(':id')
+  async getDetail(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Res() res: Response,
+  ) {
+    const category = await this.categoryService.getOneById(id);
+    if (category) {
+      res.send(category);
     } else {
       res.send({
-        status: 'error',
+        statusCode: HttpStatus.NOT_FOUND,
+        message: 'Category not found.',
       });
+    }
+  }
+
+  @Post('many')
+  async getManyCategoryById(@Body() ids: string[], @Res() res: Response) {
+    if (!ids) {
+      res.send({
+        statusCode: HttpStatus.BAD_REQUEST,
+        message: 'ids must be in array string',
+      });
+    } else {
+      const categories = await this.categoryService.getCategoriesByIds(ids);
+      if (categories) {
+        res.send(categories);
+      } else {
+        res.send({
+          statusCode: HttpStatus.NOT_FOUND,
+          message: 'Category not found.',
+        });
+      }
     }
   }
 }

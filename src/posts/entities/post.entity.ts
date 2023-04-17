@@ -66,11 +66,11 @@ export class Post {
       referencedColumnName: 'id',
     },
   })
-  categories: Pick<Category, 'id' | 'slug' | 'name' | 'status'>[];
+  categories: Category[];
 
   @ManyToOne(() => User)
   @JoinColumn({ name: 'userId', referencedColumnName: 'id' })
-  userId: string;
+  userId: User;
 
   @ManyToMany((type) => Tag)
   @JoinTable({
@@ -84,7 +84,7 @@ export class Post {
       referencedColumnName: 'id',
     },
   })
-  tags: Pick<Tag, 'id' | 'slug' | 'name'>[];
+  tags: Tag[];
 
   @Column()
   createdAt: Date;
