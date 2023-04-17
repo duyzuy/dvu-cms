@@ -1,0 +1,303 @@
+{
+	"info": {
+		"_postman_id": "077cce29-c51d-40d9-9869-6c1be10ac0a8",
+		"name": "dvu-cms",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "6364278"
+	},
+	"item": [
+		{
+			"name": "Tag",
+			"item": [
+				{
+					"name": "Create",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "Get tags",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "Get many tags",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Category",
+			"item": [
+				{
+					"name": "Create",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "Get all",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InN1cGVyYWRtaW5AZ21haWwuY29tIiwidXNlcklkIjoiMGQzMjFlODUtODdiNy00OTY5LWI0YjAtNWZkYjNiODAyNjU4IiwiaWF0IjoxNjgxNzAwNzQ4LCJleHAiOjE2ODE3ODcxNDh9.gcJShwNu4x25Lmpvi39Kk-ERQXBEEFjSzeHC0h7j7Is",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"category 2 update\",\n    \"slug\": \"category-2\",\n    \"description\": \"mo ca danh muc 2 <script></script ><a href='123123'></a>\",\n    \"thumbnail\": \"thumbnail.jpg\",\n    \"status\": \"deactive\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/categories/1e57cb88-9de7-45b0-b49c-87f264ad843b",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"categories",
+								"1e57cb88-9de7-45b0-b49c-87f264ad843b"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get detail",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "Get many category",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InN1cGVyYWRtaW5AZ21haWwuY29tIiwidXNlcklkIjoiMGQzMjFlODUtODdiNy00OTY5LWI0YjAtNWZkYjNiODAyNjU4IiwiaWF0IjoxNjgxNzAwNzQ4LCJleHAiOjE2ODE3ODcxNDh9.gcJShwNu4x25Lmpvi39Kk-ERQXBEEFjSzeHC0h7j7Is",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n    \"7c71c648-2c83-424e-b16c-4f902308f291\",\n    \"1e57cb88-9de7-45b0-b49c-87f264ad843b\"\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/categories/many",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"categories",
+								"many"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Get users",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "Create user",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "Get user detail",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "Get Profile",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Signin",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"vutruongduy2109@gmail.com\",\n    \"password\": \"123123123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/auth/signin",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"auth",
+								"signin"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Signup",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"firstName\": \"vu\",\n    \"lastName\": \"duy\",\n    \"userName\": \"super\",\n    \"email\": \"superadmin@gmail.com\",\n    \"password\": \"123123\"\n    \n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/auth/signup",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"auth",
+								"signup"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Posts",
+			"item": [
+				{
+					"name": "Get all post",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "Create post",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InN1cGVyYWRtaW5AZ21haWwuY29tIiwidXNlcklkIjoiMGQzMjFlODUtODdiNy00OTY5LWI0YjAtNWZkYjNiODAyNjU4IiwiaWF0IjoxNjgxNzAwNzQ4LCJleHAiOjE2ODE3ODcxNDh9.gcJShwNu4x25Lmpvi39Kk-ERQXBEEFjSzeHC0h7j7Is",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"bai viet so 10\",\n    \"slug\": \"slug-bai-11\",\n    \"description\": \"noi dung mo ta bai viet so 1\",\n    \"shortDescription\": \"noi dung mo ta ngan\",\n    \"categories\": [\n    \"7c71c648-2c83-424e-b16c-4f902308f291\"\n],\n    \"tags\": [\"66b3dc87-5af1-47f2-b1a7-5e1906d65b0b\"],\n    \"status\": \"pending\",\n    \"postType\": \"post\",\n    \"thumbnail\": \"image.jpg\",\n    \"createdAt\": \"2023-04-17T07:32:36.000Z\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/posts",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"posts"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Create User",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		}
+	]
+}
