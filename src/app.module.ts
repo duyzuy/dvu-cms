@@ -11,15 +11,21 @@ import { APP_GUARD } from '@nestjs/core';
 import { JwtGuard, RolesGuard } from './auth/guard';
 
 import { PhotosModule } from './photos/photos.module';
-import { dataSourceOption } from './database/data-source';
 import { UniqueWithParamsConstraint } from './utils/UpdateUniqueField';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { dataSourceOption } from 'database/data-source';
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: '.env.development',
+    }),
     TypeOrmModule.forRoot(dataSourceOption),
     UsersModule,
     PostsModule,
     CategoriesModule,
     TagsModule,
+    PhotosModule,
   ],
   providers: [
     UniqueConstraint,
@@ -34,4 +40,6 @@ import { UniqueWithParamsConstraint } from './utils/UpdateUniqueField';
     },
   ],
 })
-export class AppModule {}
+export class AppModule {
+  constructor(private configService: ConfigService) {}
+}

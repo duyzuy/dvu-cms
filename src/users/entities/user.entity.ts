@@ -8,10 +8,11 @@ import {
 import { UserRole } from '../interfaces/user.interface';
 import { Post } from 'src/posts/entities/post.entity';
 import { Expose } from 'class-transformer';
+import { ParseUUIDPipe } from '@nestjs/common';
 @Entity()
 export class User {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id: ParseUUIDPipe;
 
   @Column()
   firstName: string;

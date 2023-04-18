@@ -17,6 +17,7 @@ import { CreatePostDto } from '../dto/create-post.dto';
 import { CategoriesService } from 'src/categories/services/categories.service';
 import { TagsService } from 'src/tags/services/tags.service';
 import { UsersService } from 'src/users/users.service';
+import { dataSource } from 'database/data-source';
 @Injectable()
 export class PostsService {
   constructor(
@@ -38,12 +39,19 @@ export class PostsService {
 
     const skip = (page - 1) * take;
 
-    const [data, count] = await this.postsRepository
-      .createQueryBuilder()
-      .orderBy('createdAt', order)
-      .take(take)
-      .skip(skip)
+    const [data, count] = await dataSource
+      .getRepository(Post)
+      .createQueryBuilder('post')
+      .leftJoinAndSelect('post.categories', 'category')
       .getManyAndCount();
+
+    // const [data, count] = await this.postsRepository
+    //   .createQueryBuilder()
+    //   .leftJoinAndSelect('categories', 'category')
+    //   .orderBy('createdAt', order)
+    //   .take(take)
+    //   .skip(skip)
+    //   .getManyAndCount();
 
     if (data.length > 0) {
       return {

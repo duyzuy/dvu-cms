@@ -4,6 +4,7 @@ import { Tag } from 'src/tags/interfaces/tag.interface';
 import { PostStatus, PostTypes } from 'src/utils/types';
 import { Unique } from 'src/utils/UniqueValidation';
 import { Post } from '../entities/post.entity';
+import { ParseUUIDPipe } from '@nestjs/common';
 export class CreatePostDto {
   @IsNotEmpty()
   name: string;
@@ -34,7 +35,7 @@ export class CreatePostDto {
   tags: string[];
 
   @IsOptional()
-  userId: string;
+  userId: ParseUUIDPipe;
 
   @IsOptional()
   createdAt: Date;

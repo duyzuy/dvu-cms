@@ -6,6 +6,7 @@ import {
   NotFoundException,
   HttpException,
   HttpStatus,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 
 import { UsersService } from '../users/users.service';
@@ -24,7 +25,7 @@ export class AuthService {
 
   async signIn({ email, password }: SignInDto) {
     //Check user exists
-    const user = await this.userService.findOne(email);
+    const user = await this.userService.findOneByEmail(email);
     if (!user) {
       throw new NotFoundException('Email not exists.', 'error');
     }
@@ -46,7 +47,7 @@ export class AuthService {
   async signUp({ email, password, firstName, lastName, userName }: SignUpDto) {
     const saltOrRounds = 10;
     try {
-      const newUser = await this.userService.createUser({
+      const newUser = await this.userService.create({
         email: email,
         firstName: firstName,
         lastName: lastName,
@@ -75,7 +76,7 @@ export class AuthService {
     userId,
   }: {
     email: string;
-    userId: string;
+    userId: ParseUUIDPipe;
   }): Promise<{ accessToken: string }> {
     const token = await this.jwtService.signAsync({ email, userId });
     return {

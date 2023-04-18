@@ -7,10 +7,10 @@ export const dataSourceOption: DataSourceOptions = {
   username: 'root',
   password: '',
   database: 'dvucms',
-  entities: ['dist/**/*.entity{ .ts,.js}'],
-  migrations: ['dist/migrations/*{.ts,.js}'],
+  entities: ['dist/**/*.entity{.ts,.js}'],
+  migrations: ['dist/database/migrations/*{.ts,.js}'],
   migrationsTableName: 'migrations',
-  synchronize: true,
+  //   synchronize: true,
 };
 
-export const datasource = new DataSource(dataSourceOption);
+export const dataSource = new DataSource(dataSourceOption);

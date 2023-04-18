@@ -10,19 +10,19 @@ export class CreateUserDto {
 
   @IsNotEmpty()
   @MinLength(6, {
-    message: 'userName minimun 10 charater',
+    message: 'userName minimun 6 charater',
   })
   userName: string;
 
   @IsNotEmpty()
   @MinLength(2, {
-    message: 'firstName minimun 3 charater',
+    message: 'firstName minimun 2 charater',
   })
   firstName: string;
 
   @IsNotEmpty()
   @MinLength(3, {
-    message: 'lastName minimun 10 charater',
+    message: 'lastName minimun 3 charater',
   })
   lastName: string;
 

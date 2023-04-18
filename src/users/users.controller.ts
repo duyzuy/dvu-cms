@@ -28,7 +28,7 @@ export class UsersController {
 
   @Get()
   async getAll(@Res() res: Response, @Query() { page, perPage }) {
-    const users = await this.usersService.getAllUsers({
+    const users = await this.usersService.findAll({
       take: Number(perPage),
       page: Number(page),
     });
@@ -48,7 +48,7 @@ export class UsersController {
   @Post()
   async create(@Res() res: Response, @Body() createUserDto: CreateUserDto) {
     try {
-      const newUser = await this.usersService.createUser({ ...createUserDto });
+      const newUser = await this.usersService.create({ ...createUserDto });
       res.send({
         statusCode: 200,
         message: 'create user success',
@@ -62,7 +62,7 @@ export class UsersController {
 
   @Get(':id')
   async getUser(@Param('id', ParseUUIDPipe) id, @Res() res: Response) {
-    const userData = await this.usersService.getUserById(id);
+    const userData = await this.usersService.findOne(id);
     if (!userData) {
       res.status(400).send({
         message: 'User not found.',
@@ -80,7 +80,7 @@ export class UsersController {
     @Body() updateUserDto: UpdateUserDto,
     @Res() res: Response,
   ) {
-    const user = await this.usersService.updateUserById(id, {
+    const user = await this.usersService.update(id, {
       ...updateUserDto,
     });
     res.send({
