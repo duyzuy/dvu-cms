@@ -9,11 +9,11 @@ import { TagsModule } from './tags/tags.module';
 import { UniqueConstraint } from './utils/UniqueValidation';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtGuard, RolesGuard } from './auth/guard';
-
 import { PhotosModule } from './photos/photos.module';
 import { UniqueWithParamsConstraint } from './utils/UpdateUniqueField';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { dataSourceOption } from 'database/data-source';
+import { DataSource } from 'typeorm';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -41,5 +41,8 @@ import { dataSourceOption } from 'database/data-source';
   ],
 })
 export class AppModule {
-  constructor(private configService: ConfigService) {}
+  constructor(
+    private configService: ConfigService,
+    private dataSource: DataSource,
+  ) {}
 }

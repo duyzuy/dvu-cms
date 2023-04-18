@@ -57,7 +57,11 @@ export class PostsController {
     @Res() res: Response,
     @Param('id', ParseUUIDPipe) id: string,
   ) {
-    const post = await this.postsService.getPostById(id);
+    const post = await this.postsService.findOne(id);
+    res.send({
+      data: post,
+      statusCode: HttpStatus.FOUND,
+    });
   }
   @Get(':slug')
   async getPostBySlug(@Res() res: Response, @Param('slug') slug: string) {}

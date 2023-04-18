@@ -4,20 +4,23 @@ import {
   HttpStatus,
   Injectable,
   NotFoundException,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Post } from 'src/posts/entities/post.entity';
 import { Repository } from 'typeorm';
 import { Category } from '../entities/category.entity';
 import { CategoryCreateParams } from '../interfaces/category.interface';
+import { DataSource } from 'typeorm';
+import { Post } from 'src/posts/entities/post.entity';
 @Injectable()
 export class CategoriesService {
   constructor(
     @InjectRepository(Category)
-    private categoryRepository: Repository<Category>, // private postRepository: Repository<Post>,
+    private categoryRepository: Repository<Category>,
+    private dataSource: DataSource,
   ) {}
 
-  async getAll(query: {
+  async findAll(query: {
     take?: number;
     page?: number;
     order?: 'DESC' | 'ASC';
@@ -63,7 +66,7 @@ export class CategoriesService {
     }
   }
 
-  async getOneById(id: string) {
+  async findOne(id: string) {
     const queryBuilder = this.categoryRepository.createQueryBuilder();
     return await queryBuilder.where('id = :id', { id }).getOne();
   }
@@ -92,7 +95,7 @@ export class CategoriesService {
     }
   }
 
-  async updateOne(
+  async update(
     id: string,
     params: {
       name: string;
@@ -148,12 +151,31 @@ export class CategoriesService {
       });
   }
 
-  async deleteOne(id: string) {
+  async delete(id: string) {
     const queryBuilder = this.categoryRepository.createQueryBuilder();
     try {
       return await queryBuilder.where('id = :id', { id }).execute();
     } catch (error) {
       throw new ForbiddenException('Delete category fail');
     }
+  }
+
+  async findPosts(id: ParseUUIDPipe) {
+    const category = await this.categoryRepository
+      .createQueryBuilder()
+      .where('id = :id', { id })
+      .getOne();
+
+    const posts = await this.dataSource
+      .getRepository(Post)
+      .createQueryBuilder()
+      .take(-1)
+      .skip(0)
+      .relation(Category, 'posts')
+      .of(category)
+      .loadMany();
+    category.posts = posts;
+
+    return category;
   }
 }

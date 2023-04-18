@@ -31,7 +31,7 @@ export class CategoriesController {
 
   @Get()
   async index(@Res() res: Response, @Query() { page, perPage }) {
-    const cataData = await this.categoryService.getAll({
+    const cataData = await this.categoryService.findAll({
       take: Number(perPage),
       page: Number(page),
     });
@@ -82,7 +82,7 @@ export class CategoriesController {
     const description = removeScriptTag(updateCategoryDto.description);
     const slug = removeSpecialChar(updateCategoryDto.slug);
 
-    const data = await this.categoryService.updateOne(id, {
+    const data = await this.categoryService.update(id, {
       name: name,
       slug: slug,
       description: description,
@@ -97,7 +97,7 @@ export class CategoriesController {
     @Param('id', ParseUUIDPipe) id: string,
     @Res() res: Response,
   ) {
-    const category = await this.categoryService.getOneById(id);
+    const category = await this.categoryService.findOne(id);
     if (category) {
       res.send(category);
     } else {
@@ -128,8 +128,14 @@ export class CategoriesController {
     }
   }
   @Get(':id/posts')
-  async getPostsBycategoryId(@Param() id: ParseUUIDPipe, @Res() res: Response) {
-    // const posts = await this.postService.getPostsByCategoryId(id);
-    // console.log(posts);
+  async getPostsBycategoryId(
+    @Param('id', ParseUUIDPipe) id: ParseUUIDPipe,
+    @Res() res: Response,
+  ) {
+    console.log(id);
+    const data = await this.categoryService.findPosts(id);
+    res.send({
+      data: data,
+    });
   }
 }

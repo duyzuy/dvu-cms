@@ -7,6 +7,7 @@ import {
 } from 'typeorm';
 import { Post } from 'src/posts/entities/post.entity';
 import { CategoryStatus } from 'src/utils/types';
+
 @Entity()
 export class Category {
   @PrimaryGeneratedColumn('uuid')

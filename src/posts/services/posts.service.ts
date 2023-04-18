@@ -17,7 +17,7 @@ import { CreatePostDto } from '../dto/create-post.dto';
 import { CategoriesService } from 'src/categories/services/categories.service';
 import { TagsService } from 'src/tags/services/tags.service';
 import { UsersService } from 'src/users/users.service';
-import { dataSource } from 'database/data-source';
+import { DataSource } from 'typeorm';
 @Injectable()
 export class PostsService {
   constructor(
@@ -26,6 +26,7 @@ export class PostsService {
     private categoryService: CategoriesService,
     private tagService: TagsService,
     private userService: UsersService,
+    private dataSource: DataSource,
   ) {}
 
   async getAllPosts(query: {
@@ -39,19 +40,29 @@ export class PostsService {
 
     const skip = (page - 1) * take;
 
-    const [data, count] = await dataSource
+    const [data, count] = await this.dataSource
       .getRepository(Post)
       .createQueryBuilder('post')
-      .leftJoinAndSelect('post.categories', 'category')
+      .leftJoin('post.categories', 'category')
+      .leftJoin('post.tags', 'tag')
+      .leftJoin('post.userId', 'user')
+      .addSelect([
+        'category.id',
+        'category.name',
+        'category.slug',
+        'category.thumbnail',
+        'tag.id',
+        'tag.name',
+        'tag.slug',
+        'user.id',
+        'user.userName',
+        'user.email',
+        'user.firstName',
+        'user.lastName',
+      ])
+      .take(take)
+      .skip(skip)
       .getManyAndCount();
-
-    // const [data, count] = await this.postsRepository
-    //   .createQueryBuilder()
-    //   .leftJoinAndSelect('categories', 'category')
-    //   .orderBy('createdAt', order)
-    //   .take(take)
-    //   .skip(skip)
-    //   .getManyAndCount();
 
     if (data.length > 0) {
       return {
@@ -97,7 +108,7 @@ export class PostsService {
         async (tagId) => await this.tagService.getOneById(tagId),
       );
       const categoryPromises = categories.map(
-        async (catId) => await this.categoryService.getOneById(catId),
+        async (catId) => await this.categoryService.findOne(catId),
       );
       tagList = await Promise.all(tagPromises);
       catList = await Promise.all(categoryPromises);
@@ -113,17 +124,42 @@ export class PostsService {
     }
   }
 
-  getPostById(id: string): Promise<Post> {
-    return this.postsRepository.findOneBy({ id });
+  async findOne(id: string): Promise<Post> {
+    const post = await this.dataSource
+      .getRepository(Post)
+      .createQueryBuilder('post')
+      .where('id = :id', { id })
+      .getOne();
+
+    post.categories = await this.dataSource
+      .createQueryBuilder()
+      .relation(Post, 'categories')
+      .of(post)
+      .loadMany();
+
+    post.tags = await this.dataSource
+      .createQueryBuilder()
+      .relation(Post, 'tags')
+      .of(post)
+      .loadMany();
+
+    const user = await this.dataSource
+      .createQueryBuilder()
+      .relation(Post, 'userId')
+      .of(post)
+      .loadOne();
+    if (user) {
+      const { password, updatedAt, createdAt, role, isActive, token, ...rest } =
+        user;
+
+      post.userId = rest;
+    } else {
+      post.userId = null;
+    }
+    return post;
   }
 
-  getPostBySlug(slug: string): Promise<Post> {
+  findOneBySlug(slug: string): Promise<Post> {
     return this.postsRepository.findOneBy({ slug });
-  }
-  async getPostsByCategoryId(id: ParseUUIDPipe) {
-    const queryBuilder = this.postsRepository.createQueryBuilder();
-    return await queryBuilder
-      .leftJoinAndSelect('categories', 'category')
-      .getMany();
   }
 }
