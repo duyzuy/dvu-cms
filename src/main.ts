@@ -5,6 +5,7 @@ import { useContainer } from 'class-validator';
 import { CustomLogger } from './utils/CustomLogger';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
+    cors: true,
     // logger: ['debug', 'log', 'error', 'warn', 'verbose'],
   });
 

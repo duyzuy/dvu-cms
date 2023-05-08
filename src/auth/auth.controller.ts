@@ -26,7 +26,7 @@ export class AuthController {
       password: signInDto.password,
     });
 
-    res.send({ data: userData });
+    res.status(200).send({ data: userData });
   }
   @Public()
   @Post('signup')
@@ -35,5 +35,11 @@ export class AuthController {
       ...signUpDto,
     });
     res.send({ data: userData });
+  }
+
+  @Get('profile')
+  async getProfileFromToken(@Res() res: Response, @Req() req: Request) {
+    const user = req.user;
+    res.send({ data: user });
   }
 }

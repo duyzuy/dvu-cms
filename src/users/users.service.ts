@@ -1,18 +1,8 @@
-import {
-  Injectable,
-  forwardRef,
-  Inject,
-  ForbiddenException,
-  ParseUUIDPipe,
-} from '@nestjs/common';
+import { Injectable, ForbiddenException, ParseUUIDPipe } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, TypeORMError } from 'typeorm';
 import { User } from './entities/user.entity';
-import {
-  CreateUserParams,
-  UpdateUserParams,
-  UserRole,
-} from './interfaces/user.interface';
+
 import * as bcrypt from 'bcrypt';
 import { removeScriptTag } from 'src/helpers/regex';
 import { CreateUserDto } from './dto/create-user.dto';
